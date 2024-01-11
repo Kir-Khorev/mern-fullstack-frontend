@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Grid from "@mui/material/Grid";
-import { Post } from "../components/Post";
-import { TagsBlock } from "../components/TagsBlock";
-import { CommentsBlock } from "../components/CommentsBlock";
-import { fetchPosts, fetchTags } from "../redux/slices/posts";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import Grid from '@mui/material/Grid';
+import { Post } from '../components/Post';
+import { TagsBlock } from '../components/TagsBlock';
+import { CommentsBlock } from '../components/CommentsBlock';
+import { fetchPosts, fetchTags } from '../redux/slices/posts';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchComments } from '../redux/slices/comments';
 
 export const Home = () => {
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.auth.data);
   const { posts, tags } = useSelector((state) => state.posts);
-  const [sortBy, setSortBy] = useState("createdAt");
+  const { comments } = useSelector((state) => state.comments);
+  const [sortBy, setSortBy] = useState('createdAt');
 
-  const isPostsLoading = posts.status === "loading";
-  const isTagsLoading = tags.status === "loading";
+  console.log({ comments });
+
+  const isPostsLoading = posts.status === 'loading';
+  const isTagsLoading = tags.status === 'loading';
+  const isCommentsLoading = comments.status === 'loading';
 
   const handleTabChange = (event, newValue) => {
     event.preventDefault();
@@ -25,6 +30,7 @@ export const Home = () => {
   useEffect(() => {
     dispatch(fetchPosts({ sortBy }));
     dispatch(fetchTags());
+    dispatch(fetchComments({ sortBy }));
   }, [dispatch, sortBy]);
 
   return (
@@ -49,7 +55,7 @@ export const Home = () => {
                 id={obj._id}
                 title={obj.title}
                 imageUrl={
-                  obj.imageUrl ? `http://localhost:4444${obj.imageUrl}` : ""
+                  obj.imageUrl ? `http://localhost:4444${obj.imageUrl}` : ''
                 }
                 user={obj.user}
                 createdAt={obj.createdAt}
@@ -63,25 +69,7 @@ export const Home = () => {
         </Grid>
         <Grid xs={4} item>
           <TagsBlock items={tags.items} isLoading={isTagsLoading} />
-          <CommentsBlock
-            items={[
-              {
-                user: {
-                  fullName: "Vasya Pupkin",
-                  avatarUrl: "https://mui.com/static/images/avatar/1.jpg",
-                },
-                text: "Это тестовый комментарий",
-              },
-              {
-                user: {
-                  fullName: "Ivan Alex",
-                  avatarUrl: "https://mui.com/static/images/avatar/2.jpg",
-                },
-                text: "When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top",
-              },
-            ]}
-            isLoading={false}
-          />
+          <CommentsBlock items={comments.items} isLoading={isCommentsLoading} />
         </Grid>
       </Grid>
     </>
