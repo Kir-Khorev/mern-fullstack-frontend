@@ -14,6 +14,7 @@ export const FullPost = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const { comments } = useSelector((state) => state.comments);
+  const [commentCount, setCommentCount] = useState(comments.length);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,9 +31,13 @@ export const FullPost = () => {
     };
 
     fetchData();
-  }, [id, dispatch]);
+  }, [id, dispatch, comments.commentCount]);
 
-  console.log('comments', comments);
+  console.log({ comments });
+
+  useEffect(() => {
+    setCommentCount(comments.commentCount);
+  }, [comments.commentCount, comments]);
 
   if (isLoading) {
     return <Post isLoading={isLoading} isFullPost />;
@@ -54,8 +59,12 @@ export const FullPost = () => {
       >
         <ReactMarkdown children={data.text} />
       </Post>
-      <CommentsBlock items={comments.items} isLoading={false}>
-        <Index />
+      <CommentsBlock
+        items={comments.items}
+        isLoading={isLoading}
+        commentCount={commentCount}
+      >
+        <Index user={data.user} postId={id} />
       </CommentsBlock>
     </>
   );

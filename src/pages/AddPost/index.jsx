@@ -1,14 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
-import TextField from "@mui/material/TextField";
-import Paper from "@mui/material/Paper";
-import Button from "@mui/material/Button";
-import SimpleMDE from "react-simplemde-editor";
-import "easymde/dist/easymde.min.css";
-import styles from "./AddPost.module.scss";
-import { useSelector } from "react-redux";
-import { selectIsAuth } from "../../redux/slices/auth";
-import { useNavigate, Navigate, useParams } from "react-router-dom";
-import axios from "../../axios";
+import React, { useEffect, useRef, useState } from 'react';
+import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import SimpleMDE from 'react-simplemde-editor';
+import 'easymde/dist/easymde.min.css';
+import styles from './AddPost.module.scss';
+import { useSelector } from 'react-redux';
+import { selectIsAuth } from '../../redux/slices/auth';
+import { useNavigate, Navigate, useParams } from 'react-router-dom';
+import axios from '../../axios';
 
 export const AddPost = () => {
   const { id } = useParams();
@@ -16,10 +16,10 @@ export const AddPost = () => {
   const isAuth = useSelector(selectIsAuth);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [text, setText] = useState("");
-  const [title, setTitle] = useState("");
-  const [tags, setTags] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [text, setText] = useState('');
+  const [title, setTitle] = useState('');
+  const [tags, setTags] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const inputFileRef = useRef(null);
   const isEdit = Boolean(id);
 
@@ -27,16 +27,16 @@ export const AddPost = () => {
     try {
       const formData = new FormData();
       const file = event.target.files[0];
-      formData.append("image", file);
-      const { data } = await axios.post("/upload", formData);
+      formData.append('image', file);
+      const { data } = await axios.post('/upload', formData);
       setImageUrl(data.url);
     } catch (error) {
-      console.error("Err", error);
+      console.error('Err', error);
     }
   };
 
   const onClickRemoveImage = async (event) => {
-    setImageUrl("");
+    setImageUrl('');
   };
 
   const onChange = React.useCallback((value) => {
@@ -49,18 +49,20 @@ export const AddPost = () => {
       const fields = {
         title,
         imageUrl,
-        tags: tags.split(","),
+        tags: tags.split(','),
         text,
       };
+
+      console.log('fields', fields);
       const { data } = isEdit
         ? await axios.patch(`/posts/${id}`, fields)
-        : await axios.post("/posts", fields);
+        : await axios.post('/posts', fields);
 
-      const _id = isEdit ? id :  data._id;
+      const _id = isEdit ? id : data._id;
 
       navigate(`/posts/${_id}`);
     } catch (error) {
-      console.error("err", error);
+      console.error('err', error);
     }
   };
 
@@ -70,17 +72,17 @@ export const AddPost = () => {
         setTitle(data.title);
         setText(data.text);
         setImageUrl(data.imageUrl);
-        setTags(data.tags.join(","));
+        setTags(data.tags.join(','));
       });
     }
-  }, []);
+  }, [id]);
 
   const options = React.useMemo(
     () => ({
       spellChecker: false,
-      maxHeight: "400px",
+      maxHeight: '400px',
       autofocus: true,
-      placeholder: "Введите текст...",
+      placeholder: 'Введите текст...',
       status: false,
       autosave: {
         enabled: true,
@@ -90,7 +92,7 @@ export const AddPost = () => {
     []
   );
 
-  if (!window.localStorage.getItem("token") && !isAuth) {
+  if (!window.localStorage.getItem('token') && !isAuth) {
     return <Navigate to="/" />;
   }
 
@@ -151,7 +153,7 @@ export const AddPost = () => {
       />
       <div className={styles.buttons}>
         <Button onClick={onSubmit} size="large" variant="contained">
-          {isEdit ? "Save" : "Опубликовать"}
+          {isEdit ? 'Save' : 'Опубликовать'}
         </Button>
         <a href="/">
           <Button size="large">Отмена</Button>

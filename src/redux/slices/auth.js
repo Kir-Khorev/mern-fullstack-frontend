@@ -1,31 +1,31 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "../../axios";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from '../../axios';
 
-export const fetchAuth = createAsyncThunk("auth/fetchAuth", async (params) => {
-  const { data } = await axios.post("/auth/login", params);
+export const fetchAuth = createAsyncThunk('auth/fetchAuth', async (params) => {
+  const { data } = await axios.post('/auth/login', params);
   return data;
 });
 
 export const fetchRegister = createAsyncThunk(
-  "auth/fetchRegister",
+  'auth/fetchRegister',
   async (params) => {
-    const { data } = await axios.post("/auth/register", params);
+    const { data } = await axios.post('/auth/register', params);
     return data;
   }
 );
 
-export const fetchAuthMe = createAsyncThunk("auth/fetchAuthMe", async () => {
-  const { data } = await axios.get("/auth/me");
+export const fetchAuthMe = createAsyncThunk('auth/fetchAuthMe', async () => {
+  const { data } = await axios.get('/auth/me');
   return data;
 });
 
 const initialState = {
   data: null,
-  status: "loading",
+  status: 'loading',
 };
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     logout: (state) => {
@@ -34,38 +34,38 @@ const authSlice = createSlice({
   },
   extraReducers: {
     [fetchAuth.pending]: (state) => {
-      state.status = "loading";
+      state.status = 'loading';
     },
     [fetchAuth.fulfilled]: (state, action) => {
-      state.status = "loaded";
+      state.status = 'loaded';
       state.data = action.payload;
     },
     [fetchAuth.rejected]: (state) => {
-      state.status = "error";
+      state.status = 'error';
       state.data = null;
     },
 
     [fetchAuthMe.pending]: (state) => {
-      state.status = "loading";
+      state.status = 'loading';
     },
     [fetchAuthMe.fulfilled]: (state, action) => {
-      state.status = "loaded";
+      state.status = 'loaded';
       state.data = action.payload;
     },
     [fetchAuthMe.rejected]: (state) => {
-      state.status = "error";
+      state.status = 'error';
       state.data = null;
     },
 
     [fetchRegister.pending]: (state) => {
-      state.status = "loading";
+      state.status = 'loading';
     },
     [fetchRegister.fulfilled]: (state, action) => {
-      state.status = "loaded";
+      state.status = 'loaded';
       state.data = action.payload;
     },
     [fetchRegister.rejected]: (state) => {
-      state.status = "error";
+      state.status = 'error';
       state.data = null;
     },
   },
